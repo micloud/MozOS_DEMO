@@ -2,29 +2,15 @@
   "version": "0.1",
   "name": "MiCloud ToDo APP",
   "description": "WOW~~~ It's Todo list voice.",
-  "launch_path": "http://localhost:3000/",
+  "launch_path": "/",
   "icons": {
     "128": "/logo_m.png"
   },
   "developer": {
     "name": "Simon. Caesar. Ethan. ",
-    "url": "http://localhost:3000"
+    "url": "http://micloud.tw"
   },
   "installs_allowed_from": ["*"],
   "appcache_path": "/cache.manifest",
-  "locales": {
-    "es": {
-      "description": "Su nueva aplicación impresionante Open Web",
-      "developer": {
-        "url": "http://tw.yahoo.com"
-      }
-    },
-    "it": {
-      "description": "Il vostro nuovo fantastico Open Web App",
-      "developer": {
-        "url": "http://www.google.com"
-      }
-    }
-  },
   "default_locale": "en"
 }
