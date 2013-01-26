@@ -127,6 +127,30 @@ var App = {
 			title: val,
 			completed: false
 		});
+
+		var url = '/voice/simonsu/' + val + '/true';
+        //If using AJAX, need to get the voice url only
+        //var data = { text: val, UrlOnly: true };
+
+        console.log(url);
+		$.ajax({
+            url: url,
+            //data: data,
+            type: "GET",
+            dataType: "text",
+            success: function(data) {
+              var html = '<audio controls="controls" autobuffer="autobuffer" autoplay="autoplay"> <source src="' + data + '" /> </audio>'
+              $('#sayit').html(html);
+              //alert(data);
+              //var a = new Audio();
+              //a.src= 'http://localhost:7800/' + data;
+              //a.play();
+
+            }
+        });
+
+
+
 		$input.val('');
 		App.render();
 	},

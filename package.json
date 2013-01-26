@@ -10,17 +10,13 @@
   "volo": {
     "dependencies": {
       "zepto": "github:madrobby/zepto/v0.8",
-      "express": "3.0.0rc4",
       "soap": "*",
       "nodeutil": "*",
       "ejs": "*",
       "request": "*",
       "node-uuid": "*",
       "nodeutil": "*",
-      "cradle": "*",
       "request": "*",
-      "express-partials": "*",
-      "jade": "*"
     },
     "baseUrl": "www/js/lib"
   }
