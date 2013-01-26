@@ -4,8 +4,8 @@ var soap = require('soap')
 
 var url = 'http://tts.itri.org.tw/TTSService/Soap_1_3.php?wsdl';
 var _args = {
-  accountID: 'alvin',
-  password: '246800',
+  accountID: 'moz',
+  password: 'moz1234',
   TTStext: 'HELLO',
   TTSSpeaker:'Bruce',
   volume:'50',
@@ -66,5 +66,5 @@ getVoice('Hello', function(wav){
     console.log('>>>>>>>');
     console.log(stde);
   });
-}); 
+});
 */
