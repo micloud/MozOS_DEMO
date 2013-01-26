@@ -412,6 +412,9 @@ label[for='toggle-all'] {
 }
 
 @media screen and (max-width: 500px) {
+    #sayit {
+        display: none;
+    }
     #todoapp {
         margin: 60px 0 40px 0;
     }
