@@ -51,7 +51,7 @@ exports.getTTS = function(req, res){
     //TODO: show a commond voice for present ?
     res.end('No text input...');
   } else {
-    voice.getVoice(text, function(wavurl){
+    voice.getVoice('you input a ' + text + ' to do', function(wavurl){
       if(wavurl) {
         //res.redirect(wav);
         //req.pipe(request(wavurl));
