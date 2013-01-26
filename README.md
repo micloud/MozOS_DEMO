@@ -1,4 +1,3 @@
-MozOS_DEMO
-==========
+# Mozilla OS APP days
 
-MozOS APP 
+it is a simple project for Mozilla APP.
