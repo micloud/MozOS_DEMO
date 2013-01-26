@@ -2,7 +2,7 @@
   "version": "0.1",
   "name": "MiCloud ToDo APP",
   "description": "WOW~~~ It's Todo list voice.",
-  "launch_path": "/",
+  "launch_path": "http://localhost:3000/",
   "icons": {
     "128": "/logo_m.png"
   },
