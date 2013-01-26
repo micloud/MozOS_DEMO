@@ -23,6 +23,7 @@ var App = {
 	cacheElements: function() {
 		this.$todoApp = $('#todoapp');
 		this.$newTodo = $('#new-todo');
+		this.$toggleAllClass = $('.toggle-all');
 		this.$toggleAll = $('#toggle-all');
 		this.$main = $('#main');
 		this.$todoList = $('#todo-list');
@@ -53,7 +54,13 @@ var App = {
 
 		this.$todoList.html( html );
 		this.$main.toggle( !!this.todos.length );
-		this.$toggleAll.prop( 'checked', !this.activeTodoCount() );
+		this.$toggleAllClass.removeClass('checked');
+
+		if (!this.activeTodoCount()) {
+			this.$toggleAll.prop( 'checked', true);
+			this.$toggleAllClass.addClass('checked');
+		}
+
 		this.renderFooter();
 
 		if ( !preventRpc ) {
