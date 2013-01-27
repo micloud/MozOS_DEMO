@@ -32,10 +32,11 @@ ss.http.route( '/', function( req, res ) {
 app.get('/', function(req, res){
   res.serveClient('main');
 });
+// Voice routes
 app.all('/voice/:user/:text/:UrlOnly', routes.voice);
 app.post('/voice/:user', routes.voice);
 app.get('/voice/:user', routes.voice);
-app.get('/tts/:id', routes.getTTS);
+app.get('/tts/:id', routes.retrieveVoice);
 
 // Use server-side compiled Hogan (Mustache) templates. Others engines available
 

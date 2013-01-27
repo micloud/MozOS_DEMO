@@ -6,24 +6,21 @@ var UUID = require('node-uuid')
   , log = require('nodeutil').logger.getInstance()
   , q = require("querystring")
   , voice = require('../lib/voice')
-  , uuids = {};
-
-/*
- * GET home page.
- */
-
-exports.index = function(req, res){
-  res.redirect('/index.html');
-};
+  , uuids = {}
+  , soap = require('soap')
+  , url = 'http://tts.itri.org.tw/TTSService/Soap_1_3.php?wsdl'
+  , _args = {
+    accountID: 'moz',
+    password: 'moz1234',
+    TTStext: 'HELLO',
+    TTSSpeaker:'Bruce',
+    volume:'50',
+    speed:'5',
+    outType:'wav'
+  };
 
 exports.voice = function(req, res){
   var uuid = UUID.v1();
-  log.debug('voice>>>>>body');
-  log.debug(req.body);
-  log.debug('>>>>>uuids');
-  log.debug(uuids);
-  console.log('hello==========');
-  console.log(req.params);
   if(req.params.text) {
     uuids[uuid] = req.params.text;
     if(!req.params.UrlOnly) {
@@ -41,20 +38,17 @@ exports.voice = function(req, res){
   }
 };
 
-exports.getTTS = function(req, res){
+exports.retrieveVoice = function(req, res){
   var uuid = req.params.id
     , text = uuids[uuid];
   //rempve the item from uuids
   delete uuids[uuid];
   log.debug('Got text: %s from uuid:%s', text, uuid);
   if(!text) {
-    //TODO: show a commond voice for present ?
     res.end('No text input...');
   } else {
-    voice.getVoice('you input a ' + text + ' to do', function(wavurl){
+    getVoice('you input a ' + text + ' to do', function(wavurl){
       if(wavurl) {
-        //res.redirect(wav);
-        //req.pipe(request(wavurl));
         log.info('Request resource:%s', wavurl);
         request.get(wavurl).pipe(res);
       } else
@@ -63,35 +57,49 @@ exports.getTTS = function(req, res){
   }
 };
 
-function getVoiceURI(req, res) {
-  voice.getVoice(req.params.text, function(wavurl){
-    res.writeHead(200, {'Content-Type': 'application/json'});
-    res.end({
-        wavurl:wavurl,
-        text: req.params.text
+/**
+ * Connect voice services
+ */
+function getVoice(txt, cb) {
+  var args = _args;
+  _args.TTStext = txt;
+  soap.createClient(url, function(err, client) {
+      client.ConvertText(args, function(err, result) {
+          if(err) log.error(err);
+          log.debug(result);
+          var convertId = result.Result.split('&')[2];
+          log.debug('convertId='+ convertId);
+          if(result.Result.split('&')[0] == 0 && convertId) {
+            var t = 100;
+            var wav;
+            var fn = function(){
+              client.GetConvertStatus({
+                accountID: _args.accountID,
+                password: _args.password,
+                convertID:convertId
+              }, function(err2, result2){
+                if(err2) log.error(err2);
+                if(result2 && result2.Result && result2.Result.split('&')[0] == 0) {
+                  log.debug(result2);
+                  if(result2.Result.split('&')[3] == 'completed') {
+                    wav = result2.Result.split('&')[4];
+                    cb(wav);
+                  } else {
+                    fn();
+                  }
+                } else {
+                  log.error('client.GetConvertStatus error, result=%s', result2);
+                  cb(null);
+                }
+              });
+            };
+
+            fn();
+          } else {
+            log.error('client.ConvertText error, result=%s', result);
+            cb(null);
+          }
       });
-  })
+  });
 }
-exports.getVoiceURI = getVoiceURI;
-
-//Process the sample route
-//Will render using layout ejs/layout.ejs, and bind page ejs/sample.ejs
-exports.sampleGet = function(req, res){
-        var user = req.params.user; //Using req.params to get the route define params
-        var id = req.params.id;
-        var form_input = req.body.form_input;
-
-  res.render('sample', { title: 'Express', user: user, id: id, form_input: form_input });
-}
-
-
-
-
-
-
-
-
-
-
-
 
