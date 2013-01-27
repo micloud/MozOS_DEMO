@@ -5,19 +5,8 @@ var UUID = require('node-uuid')
   , UUID = require('node-uuid')
   , log = require('nodeutil').logger.getInstance()
   , q = require("querystring")
-  , voice = require('../lib/voice')
   , uuids = {}
-  , soap = require('soap')
-  , url = 'http://tts.itri.org.tw/TTSService/Soap_1_3.php?wsdl'
-  , _args = {
-    accountID: 'moz',
-    password: 'moz1234',
-    TTStext: 'HELLO',
-    TTSSpeaker:'Bruce',
-    volume:'50',
-    speed:'5',
-    outType:'wav'
-  };
+  , soap = require('soap');
 
 exports.voice = function(req, res){
   var uuid = UUID.v1();
@@ -49,7 +38,7 @@ exports.retrieveVoice = function(req, res){
   } else {
     getVoice('you input a ' + text + ' to do', function(wavurl){
       if(wavurl) {
-        log.info('Request resource:%s', wavurl);
+        log.trace('Request resource:%s', wavurl);
         request.get(wavurl).pipe(res);
       } else
         res.end('Error voice...');
@@ -61,14 +50,23 @@ exports.retrieveVoice = function(req, res){
  * Connect voice services
  */
 function getVoice(txt, cb) {
-  var args = _args;
+  var _args = {
+      accountID: 'moz',
+      password: 'moz1234',
+      TTStext: 'HELLO TODO!',
+      TTSSpeaker:'Bruce',
+      volume:'50',
+      speed:'5',
+      outType:'wav'
+    }
+    , url = 'http://tts.itri.org.tw/TTSService/Soap_1_3.php?wsdl'
   _args.TTStext = txt;
   soap.createClient(url, function(err, client) {
-      client.ConvertText(args, function(err, result) {
+      client.ConvertText(_args, function(err, result) {
           if(err) log.error(err);
-          log.debug(result);
+          log.trace(result);
           var convertId = result.Result.split('&')[2];
-          log.debug('convertId='+ convertId);
+          log.trace('convertId='+ convertId);
           if(result.Result.split('&')[0] == 0 && convertId) {
             var t = 100;
             var wav;
@@ -80,7 +78,7 @@ function getVoice(txt, cb) {
               }, function(err2, result2){
                 if(err2) log.error(err2);
                 if(result2 && result2.Result && result2.Result.split('&')[0] == 0) {
-                  log.debug(result2);
+                  log.trace(result2);
                   if(result2.Result.split('&')[3] == 'completed') {
                     wav = result2.Result.split('&')[4];
                     cb(wav);
